@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 from typing import Dict, List
 from datetime import datetime
+from mangum import Adapter
 
 load_dotenv()
 
@@ -23,6 +24,9 @@ if not apiKey:
 
 owm = OWM(apiKey)
 mgr = owm.weather_manager()
+
+# Add handler for AWS Lambda/Vercel
+handler = Adapter(app)
 
 @app.get("/weather/{city}")
 async def get_current_weather(city: str) -> Dict:
