@@ -2,26 +2,17 @@
     "version": 2,
     "builds": [
         {
-            "src": "api/index.py",
+            "src": "api/vercel.py",
             "use": "@vercel/python"
         }
     ],
     "routes": [
         {
-            "src": "/docs",
-            "dest": "api/index.py"
-        },
-        {
-            "src": "/openapi.json",
-            "dest": "api/index.py"
-        },
-        {
-            "src": "/weather/(.*)",
-            "dest": "api/index.py"
-        },
-        {
             "src": "/(.*)",
-            "dest": "api/index.py"
+            "dest": "api/vercel.py"
         }
-    ]
+    ],
+    "env": {
+        "APP_MODULE": "api.vercel:handler"
+    }
 }

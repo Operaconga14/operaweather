@@ -18,15 +18,26 @@ app = FastAPI(
 config_dict = get_default_config()
 config_dict['language'] = 'en'
 
-apiKey = os.getenv("OPEN_WEATHER_API_KEY")
-if not apiKey:
-    raise ValueError("OpenWeather API key not found in environment variables")
-
-owm = OWM(apiKey)
-mgr = owm.weather_manager()
+try:
+    apiKey = os.getenv("OPEN_WEATHER_API_KEY")
+    if not apiKey:
+        raise ValueError("OpenWeather API key not found in environment variables")
+    
+    owm = OWM(apiKey)
+    mgr = owm.weather_manager()
+except Exception as e:
+    print(f"Error initializing OpenWeather: {str(e)}")
+    raise
 
 # Add handler for AWS Lambda/Vercel
 handler = Adapter(app)
+
+@app.get("/")
+async def root():
+    """
+    Root endpoint to verify API is working
+    """
+    return {"status": "ok", "message": "OperaWeather API is running"}
 
 @app.get("/weather/{city}")
 async def get_current_weather(city: str) -> Dict:
@@ -134,3 +145,8 @@ async def get_forecast(city: str) -> Dict:
         }
     except Exception as e:
         raise HTTPException(status_code=404, detail=f"City not found or error: {str(e)}")
+
+# For local development
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
