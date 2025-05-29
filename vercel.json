@@ -11,8 +11,5 @@
             "src": "/(.*)",
             "dest": "api/vercel.py"
         }
-    ],
-    "env": {
-        "APP_MODULE": "api.vercel:handler"
-    }
+    ]
 }
